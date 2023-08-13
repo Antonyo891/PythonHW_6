@@ -21,9 +21,15 @@ import os, re
 os.system('cls')
 def GameStats(gameNumber:int=1,request1:str='')->list:
     return list(input(f'Матч № {i+1}. {request1} ').split(';') for i in range(gameNumber))
+def TeamSet(gameStats:list)->set:
+    teamSet:set=set()
+    for i in gameStats:
+        teamSet.add(i[0])
+        teamSet.add(i[2])
+    return teamSet
 def TeamStats(gamesStats:list)->dict:
-    teamStatsSet:set=set(map(lambda list1:list1[0],gamesStats))
     gamesStatsList:list=gamesStats
+    teamNameSet:set=TeamSet(gamesStatsList)
     for i in gamesStatsList:
         if int(i[1])<int(i[3]):
             i.pop(1)
@@ -40,16 +46,14 @@ def TeamStats(gamesStats:list)->dict:
             i.insert(1,[1,1,0,0,3]) #Всегоигр Побед Ничьих Поражений Всего очков 
             i.pop(3)
             i.insert(3,[1,0,0,1,0])
-    print(gamesStatsList)
-    gamesStatsDict:dict=dict()
-    list4:list=[]
-    for i in teamStatsSet:
+    gamesStatsDict:dict={}
+    for i in teamNameSet:
         list4:list=[]
         list5:list=[]
-        for j in range(len(gamesStatsList)):
-            for k in range(len(gamesStatsList[j])):
-                if i==gamesStatsList[j][k]:
-                    list4.append(gamesStatsList[j][k+1])
+        for j in gamesStatsList:
+            for k in range(len(j)):
+                if i==j[k]:
+                    list4.append(j[k+1])
         for l in range(len(list4[0])):
             temporary:int=0
             for items in list4:
@@ -60,13 +64,15 @@ def TeamStats(gamesStats:list)->dict:
 
 
 
+numberOfMatch:int=int(input('Введите количество прошедших матчей: '))
 request:str='Введите наименование домашней команды; количество голов забитых \
 домашней командой; наименование гостевой команды; количество голов забитых гостевой командой;'
-list1=GameStats(3,request)
+list1=GameStats(numberOfMatch,request)
 print(*list1)
 dict:dict=TeamStats(list1)
 for key,value in dict.items():
-    print (key,value)
+    print(key,end=': ')
+    print(*value)
 
 
 
